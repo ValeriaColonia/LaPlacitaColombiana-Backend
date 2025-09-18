@@ -1,5 +1,6 @@
 package com.laplacitacolombiana.springboot.controller;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -7,17 +8,17 @@ import org.springframework.web.bind.annotation.RestController;
 public class HomeController {
 
     @GetMapping("/")
-    public String home() {
-        return "¡La Placita Colombiana API está funcionando correctamente!";
+    public ResponseEntity<String> home() {
+        return ResponseEntity.ok("Prueba home");
     }
 
-    @GetMapping("/health")
-    public String health() {
-        return "OK - Servicio funcionando";
+    @GetMapping("/catalogo")
+    public ResponseEntity<String> catalogo() {
+        return ResponseEntity.ok("catalogo");
     }
 
-    @GetMapping("/public/test")
-    public String publicTest() {
-        return "Endpoint público funcionando";
+    @GetMapping("/login")
+    public ResponseEntity<String> login() {
+        return ResponseEntity.ok("login");
     }
 }

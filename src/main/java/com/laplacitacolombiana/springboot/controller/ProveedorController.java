@@ -18,7 +18,7 @@ public class ProveedorController {
         return proveedorService.findAll();
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("{id}")
     public Optional<Proveedor> getById(@PathVariable Long id) {
         return proveedorService.findById(id);
     }

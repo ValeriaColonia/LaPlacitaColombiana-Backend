@@ -38,11 +38,6 @@ public class Producto {
     @Column(length = 200, nullable = false)
     private String descripcion;
 
-    @NotNull(message = "La cantidad es obligatoria")
-    @PositiveOrZero(message = "La cantidad no puede ser negativa")
-    @Column(nullable = false)
-    private Integer cantidad;
-
     @NotNull(message = "El stock es obligatorio")
     @PositiveOrZero(message = "El stock no puede ser negativo")
     @Column(nullable = false)
@@ -128,14 +123,6 @@ public class Producto {
 
     public void setStock(Integer stock) {
         this.stock = stock;
-    }
-
-    public Integer getCantidad() {
-        return cantidad;
-    }
-
-    public void setCantidad(Integer cantidad) {
-        this.cantidad = cantidad;
     }
 
     public Integer getPresentacion() {
