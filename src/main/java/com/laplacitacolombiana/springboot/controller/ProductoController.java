@@ -9,6 +9,7 @@ import com.laplacitacolombiana.springboot.service.ProveedorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -24,6 +25,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/productos")
+@CrossOrigin(origins = "http://127.0.0.1:5501")
 public class ProductoController {
 
     @Autowired
@@ -51,6 +53,7 @@ public class ProductoController {
 
     // Crear producto
     @PostMapping("/crear")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> guardarProducto(
             @RequestParam("nombre") String nombre,
             @RequestParam("categoria") Long categoriaId,
@@ -105,35 +108,107 @@ public class ProductoController {
 
     // Editar producto
     @PutMapping("/editar/{id}")
-    public ResponseEntity<String> editar(@PathVariable Long id, @RequestBody Producto p) {
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<String> editar(@PathVariable Long id,
+                                         @RequestParam("nombre") String nombre,
+                                         @RequestParam("categoria") Long categoriaId,
+                                         @RequestParam("proveedor") Long proveedorId,
+                                         @RequestParam("precio") BigDecimal precio,
+                                         @RequestParam("descripcion") String descripcion,
+                                         @RequestParam("stock") Integer stock,
+                                         @RequestParam("presentacion") Integer presentacion,
+                                         @RequestParam("unidadMedida") Producto.UnidadMedida unidadMedida,
+                                         @RequestParam(value = "imagen", required = false) MultipartFile imagen,
+                                         @RequestParam("estado") Producto.EstadoProducto estado) {
+
+        // Buscar producto existente
+        Optional<Producto> existente = productoService.findById(id);
+        if (existente.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Producto no encontrado");
+        }
+
+        // Validar entidades relacionadas
+        Optional<Categoria> categoria = categoriaService.findById(categoriaId);
+        if (categoria.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Categoría no encontrada");
+        }
+
+        Optional<Proveedor> proveedor = proveedorService.findById(proveedorId);
+        if (proveedor.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Proveedor no encontrado");
+        }
+
+        Producto producto = existente.get();
+
+        // Actualizar campos básicos
+        producto.setNombre(nombre);
+        producto.setDescripcion(descripcion);
+        producto.setPrecio(precio);
+        producto.setStock(stock);
+        producto.setPresentacion(presentacion);
+        producto.setUnidadMedida(unidadMedida);
+        producto.setEstado(estado);
+        producto.setCategoria(categoria.get());
+        producto.setProveedor(proveedor.get());
+        // fechaRegistro se mantiene automáticamente
+
+        // Procesar imagen si se proporciona
+        try {
+            if (imagen != null && !imagen.isEmpty()) {
+                // Validaciones básicas
+                String contentType = imagen.getContentType();
+                if (contentType == null || !contentType.startsWith("image/")) {
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                            .body("El archivo debe ser una imagen");
+                }
+
+                String fileName = UUID.randomUUID().toString() + "_" + imagen.getOriginalFilename();
+                Path uploadPath = Paths.get("uploads/productos/");
+
+                if (!Files.exists(uploadPath)) {
+                    Files.createDirectories(uploadPath);
+                }
+
+                Files.copy(imagen.getInputStream(), uploadPath.resolve(fileName),
+                        StandardCopyOption.REPLACE_EXISTING);
+
+                producto.setImagen("/img/productos/" + fileName);
+            }
+
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error al procesar la imagen: " + e.getMessage());
+        }
+
+        productoService.save(producto);
+        return ResponseEntity.ok("El producto se editó correctamente");
+    }
+
+//    // Eliminar producto
+//    @DeleteMapping("/borrar/{id}")
+//    public ResponseEntity<String> eliminar(@PathVariable Long id) {
+//        productoService.delete(id);
+//        return ResponseEntity.ok("Producto eliminado correctamente");
+//    }
+
+    //Eliminar cambiar estado a no disponible
+    @PatchMapping("/borrar/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<String> eliminar(@PathVariable Long id) {
         Optional<Producto> existente = productoService.findById(id);
         if (existente.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body("Producto no encontrado");
 
         } else {
-            existente.get().setNombre(p.getNombre());
-            existente.get().setPrecio(p.getPrecio());
-            existente.get().setDescripcion(p.getDescripcion());
-            existente.get().setStock(p.getStock());
-            existente.get().setPresentacion(p.getPresentacion());
-            existente.get().setUnidadMedida(p.getUnidadMedida());
-            existente.get().setImagen(p.getImagen());
-            existente.get().setFechaRegistro(p.getFechaRegistro());
-            existente.get().setEstado(p.getEstado());
-            existente.get().setCategoria(p.getCategoria());
-            existente.get().setProveedor(p.getProveedor());
+            existente.get().setEstado(Producto.EstadoProducto.NODISPONIBLE);
 
-            productoService.save(existente.orElse(null));
+            productoService.save(existente.get());
             return ResponseEntity.ok("El producto se editó correctamente");
         }
-    }
-
-    // Eliminar producto
-    @DeleteMapping("/borrar/{id}")
-    public ResponseEntity<String> eliminar(@PathVariable Long id) {
-        productoService.delete(id);
-        return ResponseEntity.ok("Producto eliminado correctamente");
     }
 }
 

@@ -39,8 +39,8 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/", "/**", "/api/proveedores/crear", "/api/categorias/crear",
-                                "/api/usuarios", "/api/proveedores",
-                                "/auth/login", "/auth/register", "/auth/loginConDTO").permitAll()
+                                "/api/usuarios", "/api/proveedores", "/api/productos/borrar/**",
+                                "/auth/login", "/auth/register", "/auth/loginConDTO", "/api/**").permitAll()
                         .anyRequest().authenticated())
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS));

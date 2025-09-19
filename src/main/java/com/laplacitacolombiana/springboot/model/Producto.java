@@ -67,7 +67,7 @@ public class Producto {
     private EstadoProducto estado = EstadoProducto.DISPONIBLE;
 
     public enum UnidadMedida { GR, KG, ML, L }
-    public enum EstadoProducto { DISPONIBLE, AGOTADO }
+    public enum EstadoProducto { DISPONIBLE, NODISPONIBLE }
 
     public Long getId() {
         return id;
