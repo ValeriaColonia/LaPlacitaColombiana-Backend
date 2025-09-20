@@ -20,5 +20,7 @@ public class CategoriaService {
     public Optional<Categoria> findById(Long id) { return categoriaRepository.findById(id); }
 
     public void delete(Long id) { categoriaRepository.deleteById(id); }
+
+    public Optional<Categoria> findByNombre(String nombre) { return categoriaRepository.findByNombre(nombre); }
 }
 

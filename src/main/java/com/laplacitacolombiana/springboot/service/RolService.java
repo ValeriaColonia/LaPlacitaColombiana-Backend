@@ -22,6 +22,9 @@ public class RolService {
     public Optional<Rol> findById(Long id) {
         return rolRepository.findById(id);
     }
+    public Optional<Rol> findByNombre(String nombre) {
+        return rolRepository.findByNombre(nombre);
+    }
 
     public Rol save(Rol rol) { return rolRepository.save(rol); }
 
