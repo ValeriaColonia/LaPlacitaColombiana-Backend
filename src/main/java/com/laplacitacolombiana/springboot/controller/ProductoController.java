@@ -221,7 +221,6 @@ public class ProductoController {
     public Page<ProductoDTO> catalogo(
             @RequestParam(required = false) String categoria,
             @PageableDefault(size = 12, sort = "nombre", direction = Sort.Direction.ASC) Pageable pageable) {
-        // usa los métodos nuevos del service (listarCatalogo)
         return productoService.listarCatalogo(categoria, pageable);
     }
 
