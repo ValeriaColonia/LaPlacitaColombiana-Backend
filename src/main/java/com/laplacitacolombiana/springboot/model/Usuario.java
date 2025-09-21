@@ -19,6 +19,7 @@ public class Usuario {
     @NotBlank(message = "El apellido es obligatorio")
     private String apellido;
 
+    @Column(unique = true, nullable = false)
     @NotBlank(message = "El email es obligatorio")
     @Email(message = "Formato de email inválido")
     private String email;
@@ -31,12 +32,6 @@ public class Usuario {
     @NotBlank(message = "El teléfono es obligatorio")
     @Pattern(regexp = "\\d{10}", message = "El teléfono debe tener 10 dígitos")
     private String telefono;
-
-    @NotBlank(message = "La ciudad es obligatoria")
-    private String ciudad;
-
-    @NotBlank(message = "El departamento es obligatorio")
-    private String departamento;
 
     @Column(name = "fecha_registro", columnDefinition = "TIMESTAMP")
     private LocalDateTime fechaRegistro = LocalDateTime.now();
@@ -63,12 +58,6 @@ public class Usuario {
 
     public String getTelefono() { return telefono; }
     public void setTelefono(String telefono) { this.telefono = telefono; }
-
-    public String getCiudad() { return ciudad; }
-    public void setCiudad(String ciudad) { this.ciudad = ciudad; }
-
-    public String getDepartamento() { return departamento; }
-    public void setDepartamento(String departamento) { this.departamento = departamento; }
 
     public LocalDateTime getFechaRegistro() { return fechaRegistro; }
     public void setFechaRegistro(LocalDateTime fechaRegistro) { this.fechaRegistro = fechaRegistro; }

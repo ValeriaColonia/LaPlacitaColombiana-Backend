@@ -49,8 +49,6 @@ public class DataInitializer {
         usuario.setEmail("juanperez@mail.com");
         usuario.setPassword("123456");
         usuario.setTelefono("3012314545");
-        usuario.setCiudad("Bogotá");
-        usuario.setDepartamento("Cundinamarca");
 
         Optional<Rol> rol = rolService.findByNombre("ADMIN");
         usuario.setRol(rol.get());
@@ -76,6 +74,8 @@ public class DataInitializer {
     }
 
     private void crearAdminSiNoExiste(Usuario usuario) {
-        usuarioService.registerUser(usuario);
+        if (usuarioService.findByEmail(usuario.getEmail()) == null) {
+            usuarioService.registerUser(usuario);
+        }
     }
 }

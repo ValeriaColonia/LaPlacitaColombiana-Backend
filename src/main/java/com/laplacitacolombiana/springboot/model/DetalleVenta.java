@@ -1,5 +1,6 @@
 package com.laplacitacolombiana.springboot.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
@@ -20,6 +21,7 @@ public class DetalleVenta {
 
     @ManyToOne
     @JoinColumn(name = "id_venta")
+    @JsonBackReference
     private Venta venta;
 
     @ManyToOne

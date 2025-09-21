@@ -26,8 +26,7 @@ public class UsuarioService {
         // Validar campos obligatorios
         if (usuario.getEmail() == null || usuario.getPassword() == null ||
                 usuario.getNombre() == null || usuario.getApellido() == null ||
-                usuario.getCiudad() == null || usuario.getTelefono() == null ||
-                usuario.getDepartamento() == null || usuario.getRol() == null)  {
+                usuario.getTelefono() == null || usuario.getRol() == null)  {
             throw new IllegalArgumentException("Todos los campos son obligatorios");
         }
 
@@ -41,8 +40,6 @@ public class UsuarioService {
         newUser.setPassword(passwordEncoder.encode(usuario.getPassword()));
         newUser.setNombre(usuario.getNombre());
         newUser.setApellido(usuario.getApellido());
-        newUser.setCiudad(usuario.getCiudad());
-        newUser.setDepartamento(usuario.getDepartamento());
         newUser.setTelefono(usuario.getTelefono());
         newUser.setRol(usuario.getRol());
 
