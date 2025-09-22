@@ -24,6 +24,8 @@ public class VentaService {
     private UsuarioRepository usuarioRepository;
     @Autowired
     private ProductoRepository productoRepository;
+    @Autowired
+    private TwilioService twilioService;
 
     public List<Venta> findAll() { return ventaRepository.findAll(); }
 
@@ -32,16 +34,12 @@ public class VentaService {
             throw new IllegalArgumentException("El ID de usuario no puede ser nulo");
         }
 
-        System.out.println("DTO: " + dto);
-
-
         Venta venta = new Venta();
         venta.setIdTransaccion(dto.getIdTransaccion());
         venta.setEstadoPago(dto.getEstadoPago());
         venta.setFecha(dto.getFecha());
         venta.setCiudad(dto.getCiudad());
         venta.setDireccion(dto.getDireccion());
-        venta.setCantidad(dto.getCantidad());
         venta.setSubtotal(dto.getSubtotal());
         venta.setDomicilio(dto.getDomicilio());
         venta.setDescuento(BigDecimal.valueOf(0));
@@ -49,6 +47,7 @@ public class VentaService {
         venta.setTotal(dto.getSubtotal().add(dto.getDomicilio()));
         venta.setMetodoPago("PAYPAL");
         venta.setResponseJson(dto.getDetails());
+        venta.setCantidad(dto.getCantidad());
 
         Usuario usuario = usuarioRepository.findById(dto.getUserId())
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
@@ -68,7 +67,22 @@ public class VentaService {
         }).collect(Collectors.toList());
 
         venta.setDetalles(detalles);
-        return ventaRepository.save(venta);
+
+        ventaRepository.save(venta);
+
+        // Enviar mensaje por WhatsApp (no romper si falla)
+        try {
+            twilioService.enviarConfirmacion(
+                    usuario.getTelefono(),
+                    usuario.getNombre(),
+                    venta.getIdTransaccion(),
+                    venta.getTotal()
+            );
+        } catch (Exception e) {
+            System.err.println("Error enviando mensaje con Twilio: " + e.getMessage());
+        }
+
+        return venta;
     }
 
     public Optional<Venta> findById(Long id) { return ventaRepository.findById(id); }

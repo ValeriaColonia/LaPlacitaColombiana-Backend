@@ -11,4 +11,3 @@ public interface ProductoRepository extends JpaRepository<Producto, Long> {
 
     Page<Producto> findByEstadoAndStockGreaterThan(Producto.EstadoProducto estado, int stockMin, Pageable pageable);
 }
-

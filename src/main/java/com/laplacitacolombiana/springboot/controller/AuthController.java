@@ -48,19 +48,9 @@ public class AuthController {
             return ResponseEntity.badRequest().body(errors);
         }
 
-        try {
-            usuarioService.registerUser(usuario);
-            return ResponseEntity.ok(usuario);
-        } catch (RuntimeException e) {
-            // ✅ Capturar la RuntimeException y convertirla a error 400
-            if (e.getMessage().contains("correo ya existe")) {
-                Map<String, String> error = new HashMap<>();
-                error.put("email", "Este correo electrónico ya está registrado");
-                return ResponseEntity.badRequest().body(error);
-            }
-            // Si es otro tipo de RuntimeException, relanzarla
-            throw e;
-        }
+        // Continue with registration logic
+        usuarioService.registerUser(usuario);
+        return ResponseEntity.ok(usuario);
     }
 
     @PostMapping("/loginConDTO")

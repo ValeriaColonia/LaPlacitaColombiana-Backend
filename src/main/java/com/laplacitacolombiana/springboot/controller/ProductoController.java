@@ -25,7 +25,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -193,38 +192,28 @@ public class ProductoController {
         return ResponseEntity.ok("El producto se editó correctamente");
     }
 
-    // Eliminar producto
-    @DeleteMapping("/borrar/{id}")
-    public ResponseEntity<String> eliminar(@PathVariable Long id) {
-        productoService.delete(id);
-        return ResponseEntity.ok("Producto eliminado correctamente");
-    }
+//    // Eliminar producto
+//    @DeleteMapping("/borrar/{id}")
+//    public ResponseEntity<String> eliminar(@PathVariable Long id) {
+//        productoService.delete(id);
+//        return ResponseEntity.ok("Producto eliminado correctamente");
+//    }
 
-    //Cambiar stock
-    @PatchMapping("/stock/{id}")
+    //Eliminar cambiar estado a no disponible
+    @PatchMapping("/borrar/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<String> actualizarStock(
-            @PathVariable Long id,
-            @RequestBody Map<String, Integer> payload   // ← recibe un objeto JSON
-    ) {
-        Integer nuevaCantidad = payload.get("stock");   // ← “stock” es la clave JSON
-
-        if (nuevaCantidad == null) {
-            return ResponseEntity
-                    .badRequest()
-                    .body("Debe enviar { \"stock\": <número> }");
-        }
-
+    public ResponseEntity<String> eliminar(@PathVariable Long id) {
         Optional<Producto> existente = productoService.findById(id);
         if (existente.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body("Producto no encontrado");
-        }
 
-        Producto prod = existente.get();
-        prod.setStock(nuevaCantidad);
-        productoService.save(prod);
-        return ResponseEntity.ok("Stock actualizado a " + nuevaCantidad);
+        } else {
+            existente.get().setEstado(Producto.EstadoProducto.NODISPONIBLE);
+
+            productoService.save(existente.get());
+            return ResponseEntity.ok("El producto se editó correctamente");
+        }
     }
 
     // Catálogo público (DTO)
@@ -242,6 +231,19 @@ public class ProductoController {
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
-}
 
+    @PatchMapping("/stock/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<String> actualizarStock(@PathVariable Long id, @RequestBody Integer value) {
+        Optional<Producto> existente = productoService.findById(id);
+        if (existente.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Producto no encontrado");
+        } else {
+            existente.get().setStock(value);
+            productoService.save(existente.get());
+            return ResponseEntity.ok("El stock del producto se actualizó correctamente");
+        }
+    }
+}
 

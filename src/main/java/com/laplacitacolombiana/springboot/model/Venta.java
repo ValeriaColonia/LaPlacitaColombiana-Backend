@@ -25,8 +25,7 @@ public class Venta {
     @Size(max = 150, message = "La dirección no debe exceder 150 caracteres")
     private String direccion;
 
-    @NotNull(message = "La cantidad de productos es obligatorio")
-    @DecimalMin(value = "0", inclusive = true, message = "La cantidad no puede ser negativo")
+    @NotNull(message = "La cantidad es obligatoria")
     private Integer cantidad;
 
     @NotNull(message = "El subtotal es obligatorio")

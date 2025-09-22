@@ -81,13 +81,9 @@ public class VentaDTO {
         this.subtotal = subtotal;
     }
 
-    public Integer getCantidad() {
-        return cantidad;
-    }
+    public Integer getCantidad() { return cantidad; }
 
-    public void setCantidad(Integer cantidad) {
-        this.cantidad = cantidad;
-    }
+    public void setCantidad(Integer cantidad) { this.cantidad = cantidad; }
 
     public List<DetalleDTO> getProductos() {
         return productos;
