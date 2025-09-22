@@ -1,5 +1,6 @@
 package com.laplacitacolombiana.springboot.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import java.math.BigDecimal;
@@ -15,7 +16,17 @@ public class Venta {
     private Long id;
 
     @NotNull(message = "La fecha es obligatoria")
-    private LocalDate fecha;
+    private LocalDateTime fecha;
+
+    @NotBlank(message = "La ciudad es obligatoria")
+    private String ciudad;
+
+    @NotBlank(message = "La dirección es obligatoria")
+    @Size(max = 150, message = "La dirección no debe exceder 150 caracteres")
+    private String direccion;
+
+    @NotNull(message = "La cantidad es obligatoria")
+    private Integer cantidad;
 
     @NotNull(message = "El subtotal es obligatorio")
     @DecimalMin(value = "0.0", inclusive = true, message = "El subtotal no puede ser negativo")
@@ -37,14 +48,18 @@ public class Venta {
     @DecimalMin(value = "0.0", inclusive = true, message = "El total no puede ser negativo")
     private BigDecimal total;
 
-    @Column(name = "fecha_venta", columnDefinition = "TIMESTAMP")
-    private LocalDateTime fechaVenta = LocalDateTime.now();
+    @Column(name = "fecha_registro", columnDefinition = "TIMESTAMP")
+    private LocalDateTime fechaRegistro = LocalDateTime.now();
 
     @NotBlank(message = "El método de pago es obligatorio")
     private String metodoPago;
 
+    @Column(unique = true, nullable = false)
     @NotBlank(message = "El ID de transacción es obligatorio")
     private String idTransaccion;
+
+    @NotBlank(message = "El estado del pago es obligatorio")
+    private String estadoPago;
 
     @NotBlank(message = "La respuesta JSON es obligatoria")
     @Lob
@@ -55,6 +70,7 @@ public class Venta {
     private Usuario usuario;
 
     @OneToMany(mappedBy = "venta", cascade = CascadeType.ALL)
+    @JsonManagedReference
     private List<DetalleVenta> detalles;
 
     public Long getId() {
@@ -65,13 +81,25 @@ public class Venta {
         this.id = id;
     }
 
-    public LocalDate getFecha() {
+    public LocalDateTime getFecha() {
         return fecha;
     }
 
-    public void setFecha(LocalDate fecha) {
+    public void setFecha(LocalDateTime fecha) {
         this.fecha = fecha;
     }
+
+    public String getCiudad() { return ciudad; }
+
+    public void setCiudad(String ciudad) { this.ciudad = ciudad; }
+
+    public String getDireccion() { return direccion; }
+
+    public void setDireccion(String direccion) { this.direccion = direccion; }
+
+    public Integer getCantidad() { return cantidad; }
+
+    public void setCantidad(Integer cantidad) { this.cantidad = cantidad; }
 
     public BigDecimal getSubtotal() {
         return subtotal;
@@ -113,12 +141,12 @@ public class Venta {
         this.total = total;
     }
 
-    public LocalDateTime getFechaVenta() {
-        return fechaVenta;
+    public LocalDateTime getFechaRegistro() {
+        return fechaRegistro;
     }
 
-    public void setFechaVenta(LocalDateTime fechaVenta) {
-        this.fechaVenta = fechaVenta;
+    public void setFechaRegistro(LocalDateTime fechaRegistro) {
+        this.fechaRegistro = fechaRegistro;
     }
 
     public String getMetodoPago() {
@@ -136,6 +164,10 @@ public class Venta {
     public void setIdTransaccion(String idTransaccion) {
         this.idTransaccion = idTransaccion;
     }
+
+    public String getEstadoPago() { return estadoPago; }
+
+    public void setEstadoPago(String estadoPago) { this.estadoPago = estadoPago; }
 
     public String getResponseJson() {
         return responseJson;
