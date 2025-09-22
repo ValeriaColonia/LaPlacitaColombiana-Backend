@@ -1,6 +1,8 @@
 
+
 package com.laplacitacolombiana.springboot.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import java.util.List;
@@ -17,6 +19,7 @@ public class Rol {
     private String nombre;
 
     @OneToMany(mappedBy = "rol", cascade = CascadeType.ALL)
+    @JsonIgnoreProperties({"rol"})
     private List<Usuario> usuarios;
 
     public Long getId() {
