@@ -13,6 +13,7 @@ public class VentaDTO {
     private String direccion;
     private BigDecimal domicilio;
     private BigDecimal subtotal;
+    private Integer cantidad;
     private String details;
     private List<DetalleDTO> productos;
 
@@ -78,6 +79,14 @@ public class VentaDTO {
 
     public void setSubtotal(BigDecimal subtotal) {
         this.subtotal = subtotal;
+    }
+
+    public Integer getCantidad() {
+        return cantidad;
+    }
+
+    public void setCantidad(Integer cantidad) {
+        this.cantidad = cantidad;
     }
 
     public List<DetalleDTO> getProductos() {

@@ -25,6 +25,10 @@ public class Venta {
     @Size(max = 150, message = "La dirección no debe exceder 150 caracteres")
     private String direccion;
 
+    @NotNull(message = "La cantidad de productos es obligatorio")
+    @DecimalMin(value = "0", inclusive = true, message = "La cantidad no puede ser negativo")
+    private Integer cantidad;
+
     @NotNull(message = "El subtotal es obligatorio")
     @DecimalMin(value = "0.0", inclusive = true, message = "El subtotal no puede ser negativo")
     private BigDecimal subtotal;
@@ -93,6 +97,10 @@ public class Venta {
     public String getDireccion() { return direccion; }
 
     public void setDireccion(String direccion) { this.direccion = direccion; }
+
+    public Integer getCantidad() { return cantidad; }
+
+    public void setCantidad(Integer cantidad) { this.cantidad = cantidad; }
 
     public BigDecimal getSubtotal() {
         return subtotal;

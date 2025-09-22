@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
+import org.hibernate.validator.constraints.Length;
+
 import java.time.LocalDateTime;
 
 @Entity
@@ -26,7 +28,7 @@ public class Usuario {
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @NotBlank(message = "La contraseña es obligatoria")
-    @Size(min = 6, message = "La contraseña debe tener mínimo 6 caracteres")
+//    @Length(min = 6, max = 6, message = "La contraseña debe tener exactamente 6 caracteres")
     private String password;
 
     @NotBlank(message = "El teléfono es obligatorio")

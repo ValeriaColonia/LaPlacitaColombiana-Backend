@@ -32,12 +32,16 @@ public class VentaService {
             throw new IllegalArgumentException("El ID de usuario no puede ser nulo");
         }
 
+        System.out.println("DTO: " + dto);
+
+
         Venta venta = new Venta();
         venta.setIdTransaccion(dto.getIdTransaccion());
         venta.setEstadoPago(dto.getEstadoPago());
         venta.setFecha(dto.getFecha());
         venta.setCiudad(dto.getCiudad());
         venta.setDireccion(dto.getDireccion());
+        venta.setCantidad(dto.getCantidad());
         venta.setSubtotal(dto.getSubtotal());
         venta.setDomicilio(dto.getDomicilio());
         venta.setDescuento(BigDecimal.valueOf(0));
