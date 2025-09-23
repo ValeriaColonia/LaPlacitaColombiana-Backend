@@ -30,7 +30,6 @@ public class Usuario {
     private String password;
 
     @NotBlank(message = "El teléfono es obligatorio")
-    @Pattern(regexp = "\\d{10}", message = "El teléfono debe tener 10 dígitos")
     private String telefono;
 
     @Column(name = "fecha_registro", columnDefinition = "TIMESTAMP")
@@ -40,6 +39,21 @@ public class Usuario {
     @JoinColumn(name = "id_rol", nullable = false)
     @JsonIgnoreProperties({"usuarios"})
     private Rol rol;
+
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    @Column(length = 10, nullable = false)
+    private Usuario.EstadoUsuario estado = Usuario.EstadoUsuario.ACTIVO;
+
+    public EstadoUsuario getEstado() {
+        return estado;
+    }
+
+    public void setEstado(EstadoUsuario estado) {
+        this.estado = estado;
+    }
+
+    public enum EstadoUsuario { ACTIVO, NOACTIVO }
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }

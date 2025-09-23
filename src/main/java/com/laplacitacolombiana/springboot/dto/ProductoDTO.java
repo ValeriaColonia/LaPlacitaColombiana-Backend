@@ -24,7 +24,7 @@ public record ProductoDTO(
                 p.getPrecio(),
                 p.getImagen(),
                 p.getCategoria()!=null ? p.getCategoria().getNombre() : null,
-                p.getProveedor()!=null ? p.getProveedor().getNombre() : null,
+                p.getProveedor()!=null ? p.getProveedor().getRazonSocial() : null,
                 p.getPresentacion(),
                 p.getUnidadMedida()!=null ? p.getUnidadMedida().name() : null,
                 p.getStock(),

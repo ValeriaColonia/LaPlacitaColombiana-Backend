@@ -1,9 +1,6 @@
 package com.laplacitacolombiana.springboot.model;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 
 @Entity
 public class Proveedor {
@@ -33,6 +30,29 @@ public class Proveedor {
     @NotBlank(message = "La dirección es obligatoria")
     @Size(max = 150, message = "La dirección no debe exceder 150 caracteres")
     private String direccionProveedor;
+
+    public Long getIdProveedor() {
+        return idProveedor;
+    }
+
+    public void setIdProveedor(Long idProveedor) {
+        this.idProveedor = idProveedor;
+    }
+
+    public EstadoProveedor getEstado() {
+        return estado;
+    }
+
+    public void setEstado(EstadoProveedor estado) {
+        this.estado = estado;
+    }
+
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    @Column(length = 10, nullable = false)
+    private Proveedor.EstadoProveedor estado = Proveedor.EstadoProveedor.DISPONIBLE;
+
+    public enum EstadoProveedor { DISPONIBLE, NODISPONIBLE }
 
     public Long getId() {
         return idProveedor;

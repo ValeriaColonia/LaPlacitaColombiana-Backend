@@ -1,6 +1,7 @@
 package com.laplacitacolombiana.springboot.controller;
 
 import com.laplacitacolombiana.springboot.dto.UpdateUsuarioDTO;
+import com.laplacitacolombiana.springboot.model.Proveedor;
 import com.laplacitacolombiana.springboot.model.Rol;
 import com.laplacitacolombiana.springboot.model.Usuario;
 import com.laplacitacolombiana.springboot.repository.RolRepository;
@@ -9,6 +10,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -67,8 +69,8 @@ public class UsuarioController {
         if (dto.getApellido() != null) existing.setApellido(dto.getApellido());
         if (dto.getEmail() != null) existing.setEmail(dto.getEmail());
         if (dto.getTelefono() != null) existing.setTelefono(dto.getTelefono());
-        if (dto.getCiudad() != null) existing.setCiudad(dto.getCiudad());
-        if (dto.getDepartamento() != null) existing.setDepartamento(dto.getDepartamento());
+//        if (dto.getCiudad() != null) existing.setCiudad(dto.getCiudad());
+//        if (dto.getDepartamento() != null) existing.setDepartamento(dto.getDepartamento());
 
         if (dto.getPassword() != null && !dto.getPassword().isBlank()) {
             existing.setPassword(passwordEncoder.encode(dto.getPassword()));
@@ -83,10 +85,27 @@ public class UsuarioController {
         return ResponseEntity.ok(usuarioService.save(existing));
     }
 
-    @DeleteMapping("/borrar/{id}")
-    public ResponseEntity<?> delete(@PathVariable Long id) {
-        usuarioService.delete(id);
-        return ResponseEntity.noContent().build();
+//    @DeleteMapping("/borrar/{id}")
+//    public ResponseEntity<?> delete(@PathVariable Long id) {
+//        usuarioService.delete(id);
+//        return ResponseEntity.noContent().build();
+//    }
+
+    //Eliminar cambiar estado a no disponible
+    @PatchMapping("/borrar/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<String> delete(@PathVariable Long id) {
+        Optional<Usuario> existente = usuarioService.findById(id);
+        if (existente.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Usuario no encontrado");
+
+        } else {
+            existente.get().setEstado(Usuario.EstadoUsuario.NOACTIVO);
+
+            usuarioService.save(existente.get());
+            return ResponseEntity.ok("El Usuario se inactivó correctamente");
+        }
     }
 }
 

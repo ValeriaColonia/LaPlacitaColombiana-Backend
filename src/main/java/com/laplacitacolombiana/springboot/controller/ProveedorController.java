@@ -1,8 +1,12 @@
 package com.laplacitacolombiana.springboot.controller;
+import com.laplacitacolombiana.springboot.model.Producto;
 import com.laplacitacolombiana.springboot.model.Proveedor;
 import com.laplacitacolombiana.springboot.service.ProveedorService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
@@ -34,9 +38,29 @@ public class ProveedorController {
         return proveedorService.save(proveedor);
     }
 
-    @DeleteMapping("/borrar/{id}")
-    public void delete(@PathVariable Long id) {
-        proveedorService.delete(id);
+//    @DeleteMapping("/borrar/{id}")
+//    public void delete(@PathVariable Long id) {
+//        proveedorService.delete(id);
+//    }
+
+
+
+    //Eliminar cambiar estado a no disponible
+    @PatchMapping("/borrar/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<String> delete(@PathVariable Long id) {
+        Optional<Proveedor> existente = proveedorService.findById(id);
+        if (existente.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Proveedor no encontrado");
+
+        } else {
+            existente.get().setEstado(Proveedor.EstadoProveedor.NODISPONIBLE);
+
+            proveedorService.save(existente.get());
+            return ResponseEntity.ok("El productor se editó correctamente");
+        }
     }
+
 }
 
